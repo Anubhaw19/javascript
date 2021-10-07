@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+
+    <title>My-TODO-list</title>
+
+    <style>
+        body {
+            height: 100%;
+            width: 100%;
+
+        }
+
+        .data-container {
+            font-size: 20px;
+            background-color: dark;
+            padding: 20px;
+            background-color: rgb(176, 210, 242);
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">ToDo</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
+                aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled">Disabled</a>
+                    </li>
+                </ul>
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <h1 class="text-center my-2">TODO-list</h1>
+
+    <div class="data-container">
+
+
+        <div class="title mb-3">
+            <label for="exampleInputEmail1" class="form-label">Title</label>
+            <input type="text" id="title-item" class="form-control" id="title" aria-describedby="emailHelp">
+        </div>
+        <div class=" description form-group">
+            <label for="floatingTextarea2">Description</label>
+            <textarea id="decscription-item" class="form-control" placeholder="write the Description..."
+                id="floatingTextarea2" style="height: 100px"></textarea>
+        </div>
+
+        <button type="submit" id="add" class="btn btn-success my-4">Submit</button>
+        <button type="submit" id="dele" class="btn btn-danger my-4 mx-5">delete all </button>
+    </div>
+
+    <div class="my-4">
+        <h2> my list</h2>
+    </div>
+
+    <div class="my-entry my-5">
+
+        <table class="table table-primary table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Sl No.</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="table-content">
+                <tr>
+                    <th scope="row">1</th>
+                    <td>this</td>
+                    <td>that</td>
+                    <td><button class="btn btn-sm btn-danger">delete</button></td>
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+
+
+
+
+
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ"
+        crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.min.js" integrity="sha384-PsUw7Xwds7x08Ew3exXhqzbhuEYmA2xnwc8BuD6SEr+UmEHlX8/MCltYEodzWA4u" crossorigin="anonymous"></script>
+    -->
+
+    <script>
+        localarray = [];
+
+        delt = document.getElementById("dele");
+        delt.addEventListener("click", deleteAllrecords);
+
+        subt = document.getElementById("add");
+        subt.addEventListener("click", update);
+
+        function update() {
+
+            console.log("adding todo-item...");
+
+            title = document.getElementById("title-item").value;
+            description = document.getElementById("decscription-item").value;
+
+            if (localStorage.getItem('itemsJson') == null) {
+                console.log("title:" + title);
+                console.log("description:" + description);
+                localarray.push([title, description]);
+                localStorage.setItem('itemsJson', JSON.stringify(localarray));
+            }
+            else {
+                stringArray = localStorage.getItem('itemsJson');
+                localarray = JSON.parse(stringArray);
+                localarray.push([title, description]);
+                localStorage.setItem('itemsJson', JSON.stringify(localarray));
+
+            }
+
+            showInTable();
+
+        }
+
+        deleted = (current_index) => {
+            current_list = localStorage.getItem('itemsJson');
+            arr = JSON.parse(current_list);
+            //delete the current element
+            arr.splice(current_index, 1);
+            localStorage.setItem('itemsJson', JSON.stringify(arr));
+
+            getAndUpdate();
+        };
+
+        getAndUpdate = () => {
+            if (localStorage.getItem('itemsJson') == null) {
+                localStorage.setItem('itemsJson', JSON.stringify(localarray));
+            }
+            else {
+                stringArray = localStorage.getItem('itemsJson');
+                localarray = JSON.parse(stringArray);
+
+                localStorage.setItem('itemsJson', JSON.stringify(localarray));
+
+            }
+
+            showInTable();
+
+        };
+
+        showInTable = () => {
+            tableBody = document.getElementById("table-content");
+            let str = "";
+            if (localarray.length == 0) {
+                // alert("nothing in the list.")
+                console.log("nothing in the list");
+                console.log("array: " + localarray);
+                console.log("json: " + localStorage.getItem('itemsJson'));
+            }
+
+            localarray.forEach((element, index) => {
+                str += `  <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${element[0]}</td>
+                    <td>${element[1]}</td>
+                    <td><button class="btn btn-sm btn-danger" onclick="deleted(${index})">delete</button></td>
+                </tr> `;
+            });
+            tableBody.innerHTML = str;
+        };
+
+        function deleteAllrecords() {
+            // localStorage.clear();
+            console.log("deleting all.......");
+            if (localarray.length == 0)
+                alert(" nothing to delete.");
+            else {
+                sured = confirm(" do you really wants to delete all record?");
+                if (sured == true) {
+                    localarray = [];
+                    localStorage.clear();
+                    console.log("deleted all records.");
+                    getAndUpdate();
+                }
+                else {
+                    console.log("nothing deleted.");
+                }
+            }
+
+        };
+
+        getAndUpdate();
+    </script>
+
+</body>
+
+
+</html>
